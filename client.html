@@ -35,15 +35,23 @@
 			height: 40px;
 			flex: 2;
 		}
-		.btn-connect {
+		.btn-group {
+			flex: .5;
+			display: flex;
+			gap: 5px;
+		}
+		.btn {
+			flex: 1;
 			height: 40px;
-			flex: .3;
 		}
 	</style>
 	<body>
 		<div class="user-input">
 			<input type="text" id="server" class="input-server" placeholder="Enter Server Url" value="ws://localhost:8080">
-			<button type="button" id="btn-connect" class="btn-connect">Connect</button>
+			<div class="btn-group">
+				<button type="button" id="btn-connect" class="btn">Connect</button>
+				<button type="button" id="btn-stop" class="btn">Stop</button>
+			</div>
 		</div>
 		<div id="msg-container" class="msg-container">
 			
@@ -51,17 +59,20 @@
 		<script>
 			const msgContainer = document.getElementById("msg-container");
 			const btnConnect = document.getElementById("btn-connect");
+			const btnStop = document.getElementById("btn-stop");
 			const server = document.getElementById("server");
 			let num = 0;
 			let colors = ['#00BFFF', '#48D1CC', '#F0E68C'];
 			
+			let socket2;
 			btnConnect.addEventListener("click", () => {
 				if (!server.value) {
 					alert("Please Enter Server Url");
 					return;
 				}
+				
 				// Create WebSocket connection.
-				const socket2 = new WebSocket(server.value);
+				socket2 = new WebSocket(server.value);
 
 				// Connection opened
 				socket2.addEventListener("open", function (event) {
@@ -77,6 +88,12 @@
 				socket2.addEventListener("error", function (error) {
 					alert(`connection to '${server.value}' failed: `);
 				});
+			});
+			
+			btnStop.addEventListener("click", () => {
+				if (socket2) {
+					socket2.close();
+				}
 			});
 		</script>
 	</body>
