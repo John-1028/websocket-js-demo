@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Websocket Demo</title>
+	</head>
+	<style>
+		*,
+		*::before,
+		*::after {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+		body {
+			color: white;
+		}
+		.msg-container {
+			width: 80%;
+			height: 80vh;
+			background-color: black;
+			overflow-y: auto;
+			margin: 0 auto;
+		}
+		.msg {
+			margin-bottom: 10px;
+		}
+		.user-input {
+			width: 80%;
+			margin: 20px auto;
+			display: flex;
+			gap: 20px;
+		}
+		.input-server {
+			height: 40px;
+			flex: 2;
+		}
+		.btn-connect {
+			height: 40px;
+			flex: .3;
+		}
+	</style>
+	<body>
+		<div class="user-input">
+			<input type="text" id="server" class="input-server" placeholder="Enter Server Url" value="ws://localhost:8080">
+			<button type="button" id="btn-connect" class="btn-connect">Connect</button>
+		</div>
+		<div id="msg-container" class="msg-container">
+			
+		</div>
+		<script>
+			const msgContainer = document.getElementById("msg-container");
+			const btnConnect = document.getElementById("btn-connect");
+			const server = document.getElementById("server");
+			let num = 0;
+			let colors = ['#00BFFF', '#48D1CC', '#F0E68C'];
+			
+			btnConnect.addEventListener("click", () => {
+				if (!server.value) {
+					alert("Please Enter Server Url");
+					return;
+				}
+				// Create WebSocket connection.
+				const socket2 = new WebSocket(server.value);
+
+				// Connection opened
+				socket2.addEventListener("open", function (event) {
+				  socket2.send("Hello Server!");
+				});
+
+				// Listen for messages
+				socket2.addEventListener("message", function (event) {
+				  msgContainer.innerHTML += `<p class="msg" style="color: ${colors[num%3]}">#${num + 1}: ${event.data}</P>`;
+				  num += 1;
+				});
+				
+				socket2.addEventListener("error", function (error) {
+					alert(`connection to '${server.value}' failed: `);
+				});
+			});
+		</script>
+	</body>
+</html>
